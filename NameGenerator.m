@@ -9,6 +9,23 @@
 
 @implementation NameGenerator
 
+static NameGenerator *sharedSingleton;
+
++ (void)initialize
+{
+    static BOOL initialized = NO;
+    if(!initialized)
+    {
+        initialized = YES;
+        sharedSingleton = [[NameGenerator alloc] init];
+    }
+}
+
++ (NameGenerator *)sharedSingleton
+{
+    return sharedSingleton;
+}
+
 - (id)init
 {
 	self = [super init];

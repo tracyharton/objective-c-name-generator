@@ -19,6 +19,8 @@
 	NSMutableArray *female;
 }
 
++ (NameGenerator *)sharedSingleton;
+
 - (NSString *)getName;
 
 - (NSString *)getName:(BOOL)generated male:(BOOL)sex prefix:(BOOL)prefix postfix:(BOOL)postfix;

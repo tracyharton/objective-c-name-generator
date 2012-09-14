@@ -1,6 +1,7 @@
 @interface NameGenerator : NSObject
 {
-  NSMutableArray *vowel;
+    NSString *vowel;
+    NSString *letter;
 	
 	NSMutableArray *malePre;
 	NSMutableArray *maleStart;
@@ -8,7 +9,7 @@
 	NSMutableArray *maleEnd;
 	NSMutableArray *malePost;
 	
-	NSMutableArray *male;
+	NSMutableArray *maleArray;
 	
 	NSMutableArray *femalePre;
 	NSMutableArray *femaleStart;
@@ -16,13 +17,15 @@
 	NSMutableArray *femaleEnd;
 	NSMutableArray *femalePost;
 	
-	NSMutableArray *female;
+	NSMutableArray *femaleArray;
 }
 
 + (NameGenerator *)sharedSingleton;
 
+- (NSString *)getUsername;
+
 - (NSString *)getName;
 
-- (NSString *)getName:(BOOL)generated male:(BOOL)sex prefix:(BOOL)prefix postfix:(BOOL)postfix;
+- (NSString *)getName:(BOOL)generated male:(BOOL)male female:(BOOL)female prefix:(BOOL)prefix postfix:(BOOL)postfix;
 
 @end

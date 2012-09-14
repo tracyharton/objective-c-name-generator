@@ -31,7 +31,8 @@ static NameGenerator *sharedSingleton;
 	self = [super init];
 	if (self)
 	{
-		vowel = [NSMutableArray arrayWithObjects:@"a", @"e", @"i", @"o", @"u", @"y", nil];
+		vowel = @"aeiouy";
+        letter = @"abcdefghijklmnopqrstuvwxyz";
 		malePre = [NSMutableArray array];
 		femalePre = [NSMutableArray array];
 		maleStart = [NSMutableArray array];
@@ -42,8 +43,8 @@ static NameGenerator *sharedSingleton;
 		femaleEnd = [NSMutableArray array];
 		malePost = [NSMutableArray array];
 		femalePost = [NSMutableArray array];
-		male = [NSMutableArray array];
-		female = [NSMutableArray array];
+		maleArray = [NSMutableArray array];
+		femaleArray = [NSMutableArray array];
 
 		NSStringEncoding encoding;
 		NSError *error;
@@ -210,7 +211,7 @@ static NameGenerator *sharedSingleton;
 				cell = [cells objectAtIndex:0];
 				if (cell.length != 0)
 				{
-					[male addObject:cell];
+					[maleArray addObject:cell];
 				}
 			}
 			if ((cells.count >= 2) && ([cells objectAtIndex:1] != nil))
@@ -218,7 +219,7 @@ static NameGenerator *sharedSingleton;
 				cell = [cells objectAtIndex:1];
 				if (cell.length != 0)
 				{
-					[female addObject:cell];
+					[femaleArray addObject:cell];
 				}
 			}
 			if ((cells.count >= 3) && ([cells objectAtIndex:2] != nil))
@@ -226,8 +227,8 @@ static NameGenerator *sharedSingleton;
 				cell = [cells objectAtIndex:2];
 				if (cell.length != 0)
 				{
-					[male addObject:cell];
-					[female addObject:cell];
+					[maleArray addObject:cell];
+					[femaleArray addObject:cell];
 				}
 			}
 		}
@@ -241,14 +242,33 @@ static NameGenerator *sharedSingleton;
 	return (NSUInteger) floor(arc4random() % max);
 }
 
-- (NSString *)getName
+- (NSString *) getUsername
 {
-	return [self getName:YES male:YES prefix:YES postfix:YES];
+    NSString *name = [[self getName:NO male:NO female:YES prefix:NO postfix:NO] lowercaseString];
+    
+    NSString *userName = [NSString stringWithFormat:@"%c%@", [letter characterAtIndex:[self random:[letter length]]], name];
+    
+    return userName;
+    
 }
 
-- (NSString *)getName:(BOOL)generated male:(BOOL)sex prefix:(BOOL)prefix postfix:(BOOL)postfix
+- (NSString *)getName
+{
+	return [self getName:YES male:YES female:YES prefix:YES postfix:YES];
+}
+
+- (NSString *)getName:(BOOL)generated male:(BOOL)male female:(BOOL)female prefix:(BOOL)prefix postfix:(BOOL)postfix
 {
 	NSMutableString *newName = [NSMutableString string];
+    
+    BOOL sex;
+    
+    if(male && !female)
+        sex = FALSE;
+    else if(female && !male)
+        sex = FALSE;
+    else
+        sex = ([self random:100] < 50);
 
 	BOOL preAdded = NO;
 	if (prefix && ([self random:100] < PRE_CHANCE))
@@ -264,7 +284,7 @@ static NameGenerator *sharedSingleton;
 
 		if ([self random:100] < VOWEL_CHANCE)
 		{
-			[newName appendString:[vowel objectAtIndex:[self random:[vowel count]]]];
+			[newName stringByAppendingFormat:@"%c", [vowel characterAtIndex:[self random:[vowel length]]]];
 		}
 
 		if ([self random:100] < MIDDLE1_CHANCE)
@@ -280,7 +300,7 @@ static NameGenerator *sharedSingleton;
 	}
 	else
 	{
-		[newName appendString:[(sex ? male : female) objectAtIndex:[self random:[(sex ? male : female) count]]]];
+		[newName appendString:[(sex ? maleArray : femaleArray) objectAtIndex:[self random:[(sex ? maleArray : femaleArray) count]]]];
 	}
 
 	int postChance = POST_CHANCE;
